@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Administrasi & Data Induk SDIT ANNIHAYAH</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome untuk Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js untuk Grafik Dashboard -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Kustomisasi scrollbar halus */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-area {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+  <!-- NOTIFIKASI TOAST -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl flex items-center space-x-2">
+    <i class="fas fa-check-circle text-lg"></i>
+    <span id="toast-message" class="font-medium text-sm">Aksi Berhasil!</span>
+  </div>
+
+  <!-- APLIKASI UTAMA (CONTAINER LOGIN / DASHBOARD) -->
+  <div id="app" class="flex-grow flex flex-col">
+    
+    <!-- ==================== HALAMAN LOGIN ==================== -->
+    <div id="login-screen" class="flex-grow flex items-center justify-center px-4 py-12 bg-gradient-to-br from-emerald-600 via-teal-700 to-cyan-800">
+      <div class="bg-white/95 backdrop-blur-md p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/20">
+        <div class="text-center mb-8">
+          <div class="inline-flex p-4 bg-emerald-50 text-emerald-600 rounded-2xl mb-4 shadow-inner">
+            <i class="fa-solid fa-school text-4xl"></i>
+          </div>
+          <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">SDIT ANNIHAYAH</h1>
+          <p class="text-sm text-slate-500 mt-1">Sistem Kearsipan & Administrasi Data Induk</p>
+        </div>
+
+        <form id="login-form" class="space-y-5">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nama Pengguna (Username)</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fas fa-user"></i>
+              </span>
+              <input type="text" id="username" required value="admin" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm" placeholder="Masukkan username">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Kata Sandi</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fas fa-lock"></i>
+              </span>
+              <input type="password" id="password" required value="admin123" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm" placeholder="Masukkan password">
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Default demo: username <b>admin</b> & password <b>admin123</b></p>
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold py-3 px-4 rounded-xl transition duration-150 shadow-lg shadow-emerald-600/20 text-sm flex items-center justify-center space-x-2">
+            <span>Masuk ke Sistem</span>
+            <i class="fas fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== HALAMAN UTAMA (SETELAH LOGIN) ==================== -->
+    <div id="main-screen" class="hidden flex-grow flex flex-col md:flex-row">
+      
+      <!-- SIDEBAR MENU -->
+      <aside class="no-print w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
+        <!-- Brand -->
+        <div class="p-5 border-b border-slate-800 flex items-center space-x-3 bg-slate-950/40">
+          <div class="p-2 bg-emerald-500 text-slate-950 rounded-lg text-sm font-bold shadow-md">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-sm text-white tracking-wide">SDIT ANNIHAYAH</h2>
+            <p class="text-[10px] text-emerald-400 font-medium">E-Administrasi v2.0</p>
+          </div>
+        </div>
+
+        <!-- Info Pengguna -->
+        <div class="p-4 mx-3 my-4 bg-slate-800/50 rounded-xl border border-slate-800 flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow">
+            AD
+          </div>
+          <div class="overflow-hidden">
+            <h4 class="font-semibold text-xs text-white truncate" id="user-display">Administrator</h4>
+            <span class="inline-block px-2 py-0.5 mt-0.5 text-[9px] font-bold bg-emerald-500/10 text-emerald-400 rounded">Level: Admin</span>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-grow px-3 space-y-1 mb-6 overflow-y-auto max-h-[calc(100vh-280px)]">
+          <p class="text-[10px] font-bold text-slate-500 uppercase px-3 mb-2 tracking-widest">Utama</p>
+          
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition bg-emerald-600 text-white">
+            <i class="fas fa-chart-line text-sm w-5"></i>
+            <span>Dashboard Statistik</span>
+          </button>
+
+          <p class="text-[10px] font-bold text-slate-500 uppercase px-3 pt-4 mb-2 tracking-widest">Kearsipan Siswa</p>
+
+          <button onclick="switchTab('data-siswa')" id="nav-data-siswa" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-users text-sm w-5"></i>
+            <span>Data Induk Siswa</span>
+          </button>
+
+          <button onclick="switchTab('rekap-mutasi')" id="nav-rekap-mutasi" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-exchange-alt text-sm w-5"></i>
+            <span>Rekap Mutasi Masuk/Keluar</span>
+          </button>
+
+          <button onclick="switchTab('riwayat-alumni')" id="nav-riwayat-alumni" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-user-graduate text-sm w-5"></i>
+            <span>Pusat Arsip Alumni (Lulus)</span>
+          </button>
+
+          <p class="text-[10px] font-bold text-slate-500 uppercase px-3 pt-4 mb-2 tracking-widest">Akademik & Rapor</p>
+
+          <button onclick="switchTab('nilai-rapor')" id="nav-nilai-rapor" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-star text-sm w-5"></i>
+            <span>Input Nilai Rapor</span>
+          </button>
+
+          <button onclick="switchTab('absensi-catatan')" id="nav-absensi-catatan" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-calendar-check text-sm w-5"></i>
+            <span>Absensi & Catatan Guru</span>
+          </button>
+
+          <button onclick="switchTab('leger-rapor')" id="nav-leger-rapor" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-book-open text-sm w-5"></i>
+            <span>Leger Rapor Kelas</span>
+          </button>
+
+          <button onclick="switchTab('cetak-rapor')" id="nav-cetak-rapor" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-print text-sm w-5"></i>
+            <span>Cetak Rapor Siswa</span>
+          </button>
+
+          <p class="text-[10px] font-bold text-slate-500 uppercase px-3 pt-4 mb-2 tracking-widest">Pengaturan</p>
+
+          <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+            <i class="fas fa-sliders-h text-sm w-5"></i>
+            <span>Kelas & Tahun Ajaran</span>
+          </button>
+        </nav>
+
+        <!-- Keluar / Logout -->
+        <div class="p-4 border-t border-slate-800 mt-auto bg-slate-950/20">
+          <button onclick="logout()" class="w-full flex items-center justify-center space-x-2 py-2 px-3 bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 text-xs font-semibold rounded-lg transition">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Keluar Aplikasi</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- CONTENT AREA -->
+      <main class="flex-grow flex flex-col min-w-0 bg-slate-50">
+        
+        <!-- TOPBAR (Mobile Toggle & Title) -->
+        <header class="no-print bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm shrink-0">
+          <div class="flex items-center space-x-3">
+            <button class="md:hidden text-slate-600 hover:text-slate-800 p-2 focus:outline-none" onclick="toggleMobileMenu()">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h1 class="text-base md:text-lg font-bold text-slate-800" id="page-title">Dashboard Ringkasan</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="hidden sm:flex flex-col text-right">
+              <span class="text-xs font-medium text-slate-500">Tahun Ajaran Aktif</span>
+              <span id="header-ta-badge" class="text-xs font-bold text-emerald-600">--</span>
+            </div>
+            <div class="h-8 w-[1px] bg-slate-200 hidden sm:block"></div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-100 flex items-center space-x-1.5">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>SDIT ANNIHAYAH</span>
+              </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- SUB-PAGE CONTENT CONTAINER -->
+        <div class="flex-grow p-4 md:p-6 overflow-y-auto max-h-[calc(100vh-73px)]">
+
+          <!-- ==================== TAB 1: DASHBOARD ==================== -->
+          <div id="tab-dashboard" class="tab-content space-y-6">
+            <!-- Statistik Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+              <!-- Total Siswa Aktif -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Siswa Aktif</span>
+                  <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg text-xs"><i class="fas fa-user-check"></i></div>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold text-slate-800" id="stat-aktif">0</h3>
+                  <p class="text-[10px] text-slate-400 mt-1">Siswa Terdaftar</p>
+                </div>
+              </div>
+              <!-- Total Siswa Laki-laki -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Laki-Laki (L)</span>
+                  <div class="p-2 bg-blue-50 text-blue-600 rounded-lg text-xs"><i class="fas fa-mars"></i></div>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold text-slate-800" id="stat-laki">0</h3>
+                  <p class="text-[10px] text-slate-400 mt-1">Siswa Aktif</p>
+                </div>
+              </div>
+              <!-- Total Siswa Perempuan -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Perempuan (P)</span>
+                  <div class="p-2 bg-rose-50 text-rose-600 rounded-lg text-xs"><i class="fas fa-venus"></i></div>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold text-slate-800" id="stat-perempuan">0</h3>
+                  <p class="text-[10px] text-slate-400 mt-1">Siswa Aktif</p>
+                </div>
+              </div>
+              <!-- Mutasi Masuk -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Mutasi Masuk</span>
+                  <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs"><i class="fas fa-sign-in-alt"></i></div>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold text-slate-800" id="stat-mutasi-masuk">0</h3>
+                  <p class="text-[10px] text-slate-400 mt-1">Siswa Pindahan</p>
+                </div>
+              </div>
+              <!-- Mutasi Keluar -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Mutasi Keluar</span>
+                  <div class="p-2 bg-amber-50 text-amber-600 rounded-lg text-xs"><i class="fas fa-sign-out-alt"></i></div>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold text-slate-800" id="stat-mutasi-keluar">0</h3>
+                  <p class="text-[10px] text-slate-400 mt-1">Siswa Keluar</p>
+                </div>
+              </div>
+              <!-- Total Lulusan -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Total Lulusan</span>
+                  <div class="p-2 bg-purple-50 text-purple-600 rounded-lg text-xs"><i class="fas fa-graduation-cap"></i></div>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold text-slate-800" id="stat-lulus">0</h3>
+                  <p class="text-[10px] text-slate-400 mt-1">Alumni Terdaftar</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bagian Grafik & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Grafik -->
+              <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm lg:col-span-2">
+                <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center space-x-2">
+                  <i class="fas fa-chart-bar text-emerald-500"></i>
+                  <span>Grafik Statistik Data Induk Siswa</span>
+                </h3>
+                <div class="relative h-64 md:h-80">
+                  <canvas id="dashboardChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Distribusi Kelas & Quick Info -->
+              <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
+                <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center space-x-2">
+                  <i class="fas fa-layer-group text-emerald-500"></i>
+                  <span>Rekapitulasi Siswa Per Kelas</span>
+                </h3>
+                <div id="dashboard-class-recap" class="flex-grow space-y-3 overflow-y-auto max-h-[300px] pr-2">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 2: DATA INDUK SISWA ==================== -->
+          <div id="tab-data-siswa" class="tab-content hidden space-y-6">
+            
+            <!-- Pencarian & Tombol Aksi Tambah -->
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="relative w-full md:w-96">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <i class="fas fa-search text-xs"></i>
+                </span>
+                <input type="text" id="search-siswa" oninput="filterSiswaTable()" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs" placeholder="Cari siswa berdasarkan Nama, NIS, atau NISN...">
+              </div>
+
+              <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
+                <select id="filter-status" onchange="filterSiswaTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                  <option value="Semua">Semua Status</option>
+                  <option value="Aktif">Aktif</option>
+                  <option value="Mutasi Masuk">Mutasi Masuk</option>
+                  <option value="Mutasi Keluar">Mutasi Keluar</option>
+                  <option value="Lulus">Lulus</option>
+                </select>
+                <select id="filter-kelas" onchange="filterSiswaTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                  <option value="Semua">Semua Kelas</option>
+                  <!-- Diisi via JS -->
+                </select>
+                <button onclick="openFormSiswaModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl text-xs flex items-center space-x-1.5 shadow-md shadow-emerald-600/10 transition">
+                  <i class="fas fa-plus-circle"></i>
+                  <span>Tambah Siswa Baru</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabel Data Siswa -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50/75 border-b border-slate-100">
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" onclick="sortTableSiswa('nama')">Nama <i class="fas fa-sort text-[8px] ml-1"></i></th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" onclick="sortTableSiswa('nis')">NIS <i class="fas fa-sort text-[8px] ml-1"></i></th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" onclick="sortTableSiswa('nisn')">NISN <i class="fas fa-sort text-[8px] ml-1"></i></th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Kelas</th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Jenis Kelamin</th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tahun Ajaran</th>
+                      <th class="p-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="siswa-table-body" class="divide-y divide-slate-100 text-xs">
+                    <!-- Dibuat via JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="p-4 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
+                <span id="siswa-table-info">Menampilkan 0 data</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 3: REKAP MUTASI ==================== -->
+          <div id="tab-rekap-mutasi" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              <!-- Mutasi Masuk -->
+              <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                    <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-xs"><i class="fas fa-arrow-alt-circle-right"></i></span>
+                    <span>Rekapitulasi Mutasi Masuk</span>
+                  </h3>
+                  <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded" id="count-mutasi-masuk">0 Siswa</span>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead>
+                      <tr class="text-slate-400 font-bold border-b border-slate-100">
+                        <th class="pb-2">Nama (NIS)</th>
+                        <th class="pb-2">Tgl Masuk</th>
+                        <th class="pb-2">Sekolah Asal</th>
+                      </tr>
+                    </thead>
+                    <tbody id="mutasi-masuk-table-body" class="divide-y divide-slate-100 text-[11px] text-slate-600">
+                      <!-- Ditampilkan via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Mutasi Keluar -->
+              <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                    <span class="p-1.5 bg-amber-50 text-amber-600 rounded-lg text-xs"><i class="fas fa-arrow-alt-circle-left"></i></span>
+                    <span>Rekapitulasi Mutasi Keluar</span>
+                  </h3>
+                  <span class="text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded" id="count-mutasi-keluar">0 Siswa</span>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead>
+                      <tr class="text-slate-400 font-bold border-b border-slate-100">
+                        <th class="pb-2">Nama (NIS)</th>
+                        <th class="pb-2">Tgl Keluar</th>
+                        <th class="pb-2">Sekolah Tujuan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="mutasi-keluar-table-body" class="divide-y divide-slate-100 text-[11px] text-slate-600">
+                      <!-- Ditampilkan via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ==================== TAB 4: RIWAYAT ALUMNI ==================== -->
+          <div id="tab-riwayat-alumni" class="tab-content hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div class="border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                  <span class="p-1.5 bg-purple-50 text-purple-600 rounded-lg text-xs"><i class="fas fa-archive"></i></span>
+                  <span>Pusat Arsip Alumni (Lulus)</span>
+                </h3>
+                <p class="text-[11px] text-slate-500 mt-1">Sistem menampilkan leger kumulatif nilai semester ganjil/genap dari Kelas 1 sampai Kelas 6 serta informasi Ijazah.</p>
+              </div>
+
+              <!-- Selector Alumni -->
+              <div class="flex flex-col md:flex-row gap-3 items-end">
+                <div class="w-full md:w-72">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Siswa Alumni</label>
+                  <select id="alumni-selector" onchange="loadAlumniProfile()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="">-- Pilih Siswa Alumni --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profil Card Alumni & Leger Nilai Kumulatif -->
+            <div id="alumni-data-section" class="hidden grid grid-cols-1 xl:grid-cols-4 gap-6">
+              
+              <!-- Profil Card Prominent -->
+              <div class="bg-gradient-to-b from-indigo-900 to-slate-900 text-white p-6 rounded-3xl shadow-xl space-y-6 self-start">
+                <div class="text-center relative">
+                  <div class="w-20 h-20 bg-emerald-500 border-4 border-slate-800 mx-auto rounded-full flex items-center justify-center text-slate-900 font-extrabold text-2xl shadow-lg">
+                    <i class="fas fa-user-graduate"></i>
+                  </div>
+                  <h4 class="font-bold text-base mt-4" id="alumni-nama">Nama Siswa</h4>
+                  <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-1" id="alumni-nis-nisn">NIS: - / NISN: -</p>
+                </div>
+
+                <div class="border-t border-slate-800 pt-4 space-y-3 text-xs">
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Tanggal Masuk:</span>
+                    <span class="font-semibold" id="alumni-tgl-masuk">-</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Tanggal Lulus:</span>
+                    <span class="font-semibold" id="alumni-tgl-lulus">-</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">No Ijazah:</span>
+                    <span class="font-semibold text-emerald-400" id="alumni-no-ijazah">-</span>
+                  </div>
+                  <div class="flex flex-col pt-3 border-t border-slate-800">
+                    <span class="text-slate-400 text-center mb-1">Nilai Rata-Rata Ijazah</span>
+                    <span class="text-3xl font-black text-center text-emerald-400" id="alumni-nilai-rata">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Leger Nilai Kumulatif (Kelas 1 - Kelas 6) -->
+              <div class="xl:col-span-3 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+                <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                  <i class="fas fa-history text-indigo-500"></i>
+                  <span>Rekam Jejak Leger Nilai Kumulatif (Semester 1 - 12)</span>
+                </h3>
+                
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="p-2 font-bold text-slate-600">Kelas & Semester</th>
+                        <th class="p-2 font-bold text-slate-600">Tahun Ajaran</th>
+                        <th class="p-2 font-bold text-slate-600">PPKN</th>
+                        <th class="p-2 font-bold text-slate-600">PAI</th>
+                        <th class="p-2 font-bold text-slate-600">B.INDO</th>
+                        <th class="p-2 font-bold text-slate-600">MTK</th>
+                        <th class="p-2 font-bold text-slate-600">IPAS</th>
+                        <th class="p-2 font-bold text-slate-600">IPA</th>
+                        <th class="p-2 font-bold text-slate-600">IPS</th>
+                        <th class="p-2 font-bold text-slate-600">SBDP</th>
+                        <th class="p-2 font-bold text-slate-600">PJOK</th>
+                        <th class="p-2 font-bold text-slate-600">B.SUNDA</th>
+                        <th class="p-2 font-bold text-slate-600">B.INGGRIS</th>
+                        <th class="p-2 font-bold text-slate-600 text-center">RATA-RATA</th>
+                      </tr>
+                    </thead>
+                    <tbody id="alumni-leger-body" class="divide-y divide-slate-100">
+                      <!-- Diisi via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ==================== TAB 5: INPUT NILAI RAPOR ==================== -->
+          <div id="tab-nilai-rapor" class="tab-content hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="w-full md:w-1/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Kelas</label>
+                  <select id="nilai-pilih-kelas" onchange="onPilihKelasUbah()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+                <div class="w-full md:w-1/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Semester</label>
+                  <select id="nilai-pilih-semester" onchange="loadFormNilaiSiswa()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <option value="1">Ganjil (Semester 1)</option>
+                    <option value="2">Genap (Semester 2)</option>
+                  </select>
+                </div>
+                <div class="w-full md:w-2/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Siswa</label>
+                  <select id="nilai-pilih-siswa" onchange="loadFormNilaiSiswa()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Nilai -->
+            <div id="nilai-form-section" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                  <i class="fas fa-edit text-emerald-500"></i>
+                  <span>Nilai Mata Pelajaran</span>
+                </h3>
+                <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg font-bold" id="nilai-nama-siswa-display">Nama Siswa</span>
+              </div>
+
+              <form id="nilai-mapel-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- PPKN -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">PPKN</label>
+                  <input type="number" id="n-ppkn" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- PAI -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">PAI</label>
+                  <input type="number" id="n-pai" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- B.INDO -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Bahasa Indonesia</label>
+                  <input type="number" id="n-indo" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- MTK -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Matematika</label>
+                  <input type="number" id="n-mtk" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- IPAS -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">IPAS</label>
+                  <input type="number" id="n-ipas" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- IPA -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">IPA</label>
+                  <input type="number" id="n-ipa" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- IPS -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">IPS</label>
+                  <input type="number" id="n-ips" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- SBDP -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">SBDP</label>
+                  <input type="number" id="n-sbdp" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- PJOK -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">PJOK</label>
+                  <input type="number" id="n-pjok" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- B.SUNDA -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Bahasa Sunda</label>
+                  <input type="number" id="n-sunda" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+                <!-- B.INGGRIS -->
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Bahasa Inggris</label>
+                  <input type="number" id="n-inggris" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs">
+                </div>
+              </form>
+              <div class="flex justify-end pt-4 border-t border-slate-100">
+                <button onclick="simpanNilaiRapor()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-5 rounded-xl text-xs flex items-center space-x-1.5 shadow shadow-emerald-500/10">
+                  <i class="fas fa-save"></i>
+                  <span>Simpan Nilai</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 6: ABSENSI & CATATAN GURU ==================== -->
+          <div id="tab-absensi-catatan" class="tab-content hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="w-full md:w-1/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Kelas</label>
+                  <select id="absensi-pilih-kelas" onchange="onPilihKelasAbsensiUbah()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+                <div class="w-full md:w-1/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Semester</label>
+                  <select id="absensi-pilih-semester" onchange="loadFormAbsensiSiswa()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <option value="1">Ganjil (Semester 1)</option>
+                    <option value="2">Genap (Semester 2)</option>
+                  </select>
+                </div>
+                <div class="w-full md:w-2/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Siswa</label>
+                  <select id="absensi-pilih-siswa" onchange="loadFormAbsensiSiswa()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Absensi & Catatan Guru -->
+            <div id="absensi-form-section" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                  <i class="fas fa-calendar-check text-emerald-500"></i>
+                  <span>Absensi & Catatan Perkembangan Siswa</span>
+                </h3>
+                <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg font-bold" id="absensi-nama-siswa-display">Nama Siswa</span>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Absensi -->
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-4">
+                  <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wide">Absensi (Kehadiran)</h4>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="block text-[10px] font-bold text-slate-600 mb-1">Sakit (S)</label>
+                      <input type="number" id="abs-sakit" min="0" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                      <label class="block text-[10px] font-bold text-slate-600 mb-1">Izin (I)</label>
+                      <input type="number" id="abs-izin" min="0" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                      <label class="block text-[10px] font-bold text-slate-600 mb-1">Tanpa Keterangan (A)</label>
+                      <input type="number" id="abs-alpa" min="0" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Catatan / Deskripsi Perkembangan -->
+                <div class="lg:col-span-2 space-y-4">
+                  <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wide">Catatan / Deskripsi Perkembangan</h4>
+                  <div>
+                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Catatan Wali Kelas</label>
+                    <textarea id="catatan-guru" rows="6" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400" placeholder="Berikan catatan, masukan, pujian, atau evaluasi tentang perkembangan belajar siswa..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-end pt-4 border-t border-slate-100">
+                <button onclick="simpanAbsensiCatatan()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-5 rounded-xl text-xs flex items-center space-x-1.5 shadow shadow-emerald-500/10">
+                  <i class="fas fa-save"></i>
+                  <span>Simpan Absensi & Catatan</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 7: LEGER RAPOR ==================== -->
+          <div id="tab-leger-rapor" class="tab-content hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="w-full md:w-1/3">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Kelas</label>
+                  <select id="leger-pilih-kelas" onchange="renderLegerRapor()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+                <div class="w-full md:w-1/3">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Semester</label>
+                  <select id="leger-pilih-semester" onchange="renderLegerRapor()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <option value="1">Ganjil (Semester 1)</option>
+                    <option value="2">Genap (Semester 2)</option>
+                  </select>
+                </div>
+                <div class="w-full md:w-1/3">
+                  <button onclick="cetakLeger()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-1.5">
+                    <i class="fas fa-print"></i>
+                    <span>Cetak Leger Kelas</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabel Leger Nilai Rapor -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden" id="print-leger-container">
+              <div class="p-6 border-b border-slate-100 text-center flex flex-col items-center">
+                <h2 class="text-base font-extrabold text-slate-800 uppercase tracking-wider">Leger Nilai Rapor Siswa</h2>
+                <h3 class="text-sm font-semibold text-emerald-600 mt-1" id="leger-subtitle">Kelas: - | Semester: -</h3>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                      <th class="p-3 font-bold text-slate-600">No</th>
+                      <th class="p-3 font-bold text-slate-600">Nama Siswa</th>
+                      <th class="p-3 font-bold text-slate-600">NIS</th>
+                      <th class="p-3 font-bold text-slate-600">PPKN</th>
+                      <th class="p-3 font-bold text-slate-600">PAI</th>
+                      <th class="p-3 font-bold text-slate-600">B.INDO</th>
+                      <th class="p-3 font-bold text-slate-600">MTK</th>
+                      <th class="p-3 font-bold text-slate-600">IPAS</th>
+                      <th class="p-3 font-bold text-slate-600">IPA</th>
+                      <th class="p-3 font-bold text-slate-600">IPS</th>
+                      <th class="p-3 font-bold text-slate-600">SBDP</th>
+                      <th class="p-3 font-bold text-slate-600">PJOK</th>
+                      <th class="p-3 font-bold text-slate-600">B.SUNDA</th>
+                      <th class="p-3 font-bold text-slate-600">B.INGGRIS</th>
+                      <th class="p-3 font-bold text-slate-600 text-center bg-emerald-50">Rata-Rata</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leger-table-body" class="divide-y divide-slate-100">
+                    <!-- Dibuat via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 8: CETAK RAPOR ==================== -->
+          <div id="tab-cetak-rapor" class="tab-content hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="w-full md:w-1/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Kelas</label>
+                  <select id="cetak-pilih-kelas" onchange="onPilihKelasCetakUbah()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+                <div class="w-full md:w-1/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Semester</label>
+                  <select id="cetak-pilih-semester" onchange="renderRaporSiswa()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <option value="1">Ganjil (Semester 1)</option>
+                    <option value="2">Genap (Semester 2)</option>
+                  </select>
+                </div>
+                <div class="w-full md:w-2/4">
+                  <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Siswa</label>
+                  <select id="cetak-pilih-siswa" onchange="renderRaporSiswa()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+                    <!-- Diisi via JS -->
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview Rapor Area -->
+            <div id="rapor-preview-section" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <span class="text-xs font-bold text-slate-500 uppercase">Preview Rapor</span>
+                <button onclick="cetakRaporSewa()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center space-x-1.5 shadow">
+                  <i class="fas fa-print"></i>
+                  <span>Cetak Rapor Ini</span>
+                </button>
+              </div>
+
+              <!-- Cetak Area -->
+              <div id="rapor-print-container" class="border border-slate-200 p-8 rounded-2xl max-w-3xl mx-auto bg-white text-slate-900 shadow-inner">
+                <!-- Header Rapor -->
+                <div class="border-b-4 border-double border-slate-900 pb-4 text-center">
+                  <h1 class="text-lg font-extrabold uppercase">SDIT ANNIHAYAH</h1>
+                  <p class="text-xs text-slate-600">Karawang, Jawa Barat - Indonesia</p>
+                  <p class="text-[10px] text-slate-500">Sistem Informasi Akademik & Data Induk</p>
+                </div>
+
+                <!-- Metadata Rapor -->
+                <div class="grid grid-cols-2 gap-4 py-6 text-xs">
+                  <div class="space-y-1">
+                    <p><span class="inline-block w-24 font-semibold">Nama Siswa</span>: <span id="r-nama" class="font-bold">-</span></p>
+                    <p><span class="inline-block w-24 font-semibold">NIS</span>: <span id="r-nis">-</span></p>
+                    <p><span class="inline-block w-24 font-semibold">NISN</span>: <span id="r-nisn">-</span></p>
+                  </div>
+                  <div class="space-y-1">
+                    <p><span class="inline-block w-24 font-semibold">Kelas</span>: <span id="r-kelas">-</span></p>
+                    <p><span class="inline-block w-24 font-semibold">Semester</span>: <span id="r-semester">-</span></p>
+                    <p><span class="inline-block w-24 font-semibold">Tahun Ajaran</span>: <span id="r-ta">-</span></p>
+                  </div>
+                </div>
+
+                <!-- Nilai Rapor -->
+                <table class="w-full text-left text-xs border-collapse border border-slate-300">
+                  <thead>
+                    <tr class="bg-slate-100">
+                      <th class="border border-slate-300 p-2 font-bold text-center w-12">No</th>
+                      <th class="border border-slate-300 p-2 font-bold">Mata Pelajaran</th>
+                      <th class="border border-slate-300 p-2 font-bold text-center w-24">Nilai Kognitif</th>
+                    </tr>
+                  </thead>
+                  <tbody id="r-nilai-body">
+                    <!-- Dinamis via JS -->
+                  </tbody>
+                </table>
+
+                <!-- Absensi & Catatan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <!-- Absensi -->
+                  <table class="w-full text-left text-xs border-collapse border border-slate-300 h-fit">
+                    <thead>
+                      <tr class="bg-slate-100">
+                        <th class="border border-slate-300 p-2 font-bold" colspan="2">Absensi (Kehadiran)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="border border-slate-300 p-2">Sakit (S)</td>
+                        <td class="border border-slate-300 p-2 text-center font-bold" id="r-abs-sakit">0 Hari</td>
+                      </tr>
+                      <tr>
+                        <td class="border border-slate-300 p-2">Izin (I)</td>
+                        <td class="border border-slate-300 p-2 text-center font-bold" id="r-abs-izin">0 Hari</td>
+                      </tr>
+                      <tr>
+                        <td class="border border-slate-300 p-2">Tanpa Keterangan (A)</td>
+                        <td class="border border-slate-300 p-2 text-center font-bold" id="r-abs-alpa">0 Hari</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Catatan Guru -->
+                  <div class="border border-slate-300 p-3 rounded text-xs flex flex-col justify-between">
+                    <div>
+                      <h4 class="font-bold border-b border-slate-200 pb-1 mb-2">Catatan Wali Kelas</h4>
+                      <p class="italic text-slate-700" id="r-catatan">"Wali kelas belum memberikan catatan untuk semester ini."</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tanda Tangan -->
+                <div class="grid grid-cols-3 gap-4 text-center text-xs mt-12">
+                  <div>
+                    <p>Orang Tua/Wali</p>
+                    <br><br><br>
+                    <p class="font-bold border-t border-slate-400 pt-1 inline-block min-w-[120px]">( ........................... )</p>
+                  </div>
+                  <div>
+                    <p>Wali Kelas</p>
+                    <br><br><br>
+                    <p class="font-bold border-t border-slate-400 pt-1 inline-block min-w-[120px]">( Wali Kelas )</p>
+                  </div>
+                  <div>
+                    <p>Kepala Sekolah</p>
+                    <br><br><br>
+                    <p class="font-bold border-t border-slate-400 pt-1 inline-block min-w-[120px]">SDIT ANNIHAYAH</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 9: PENGATURAN KELAS & TA ==================== -->
+          <div id="tab-settings" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <!-- Pengaturan Kelas -->
+              <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                  <i class="fas fa-layer-group text-indigo-500"></i>
+                  <span>Daftar Kelas Terdaftar</span>
+                </h3>
+                <div class="flex space-x-2">
+                  <input type="text" id="setting-new-kelas" class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="Tambah kelas baru (contoh: Kelas 1A)">
+                  <button onclick="tambahKelas()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs">Tambah</button>
+                </div>
+                <div class="max-h-60 overflow-y-auto border border-slate-100 rounded-xl divide-y divide-slate-50" id="settings-class-list">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+
+              <!-- Pengaturan Tahun Ajaran -->
+              <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                  <i class="fas fa-calendar-alt text-teal-500"></i>
+                  <span>Tahun Ajaran Aktif & Daftar</span>
+                </h3>
+                <div class="flex space-x-2">
+                  <input type="text" id="setting-new-ta" class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="Tambah tahun ajaran (contoh: 2026/2027)">
+                  <button onclick="tambahTA()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs">Tambah</button>
+                </div>
+                <div class="max-h-60 overflow-y-auto border border-slate-100 rounded-xl divide-y divide-slate-50" id="settings-ta-list">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL TAMBAH/EDIT SISWA ==================== -->
+  <div id="siswa-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform scale-95 transition-all duration-300">
+      
+      <!-- Modal Header -->
+      <div class="p-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex justify-between items-center">
+        <h3 class="font-extrabold text-sm md:text-base flex items-center space-x-2" id="siswa-modal-title">
+          <i class="fas fa-user-plus"></i>
+          <span>Tambah Data Siswa Baru</span>
+        </h3>
+        <button onclick="closeFormSiswaModal()" class="text-white hover:text-slate-200 focus:outline-none">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <form id="siswa-form" onsubmit="saveSiswa(event)" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+        <input type="hidden" id="siswa-edit-id">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Nama Lengkap -->
+          <div class="md:col-span-2">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Nama Lengkap Siswa</label>
+            <input type="text" id="siswa-nama" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <!-- NIS -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">NIS (Nomor Induk Siswa)</label>
+            <input type="text" id="siswa-nis" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <!-- NISN -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">NISN</label>
+            <input type="text" id="siswa-nisn" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <!-- Kelas -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Kelas Saat Ini</label>
+            <select id="siswa-kelas" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+              <!-- Diisi via JS -->
+            </select>
+          </div>
+
+          <!-- Jenis Kelamin -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Jenis Kelamin</label>
+            <select id="siswa-jk" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+              <option value="L">Laki-Laki (L)</option>
+              <option value="P">Perempuan (P)</option>
+            </select>
+          </div>
+
+          <!-- Status Keanggotaan -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Status</label>
+            <select id="siswa-status" onchange="toggleStatusFields()" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+              <option value="Aktif">Aktif</option>
+              <option value="Mutasi Masuk">Mutasi Masuk</option>
+              <option value="Mutasi Keluar">Mutasi Keluar</option>
+              <option value="Lulus">Lulus (Alumni)</option>
+            </select>
+          </div>
+
+          <!-- Tahun Ajaran Terdaftar -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Tahun Ajaran Masuk/Terdaftar</label>
+            <select id="siswa-ta" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+              <!-- Diisi via JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Bagian Input Dinamis Khusus: LULUS -->
+        <div id="field-status-lulus" class="hidden border-t border-slate-100 pt-4 space-y-4">
+          <p class="text-[10px] font-extrabold text-emerald-600 uppercase tracking-widest">Informasi Kelulusan & Ijazah</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Nomor Ijazah</label>
+              <input type="text" id="siswa-no-ijazah" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="Contoh: DN-02/D-SD/06/...">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Tanggal Kelulusan</label>
+              <input type="date" id="siswa-tgl-lulus" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Nilai Rata-Rata Ijazah</label>
+              <input type="number" step="0.01" id="siswa-rata-rata" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="Misal: 85.50">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagian Input Dinamis Khusus: MUTASI MASUK -->
+        <div id="field-status-mutasi-masuk" class="hidden border-t border-slate-100 pt-4 space-y-4">
+          <p class="text-[10px] font-extrabold text-indigo-600 uppercase tracking-widest">Informasi Mutasi Masuk</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Tanggal Masuk</label>
+              <input type="date" id="siswa-tgl-masuk" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Sekolah Asal</label>
+              <input type="text" id="siswa-sekolah-asal" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="Nama SD asal">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Alamat Asal</label>
+              <input type="text" id="siswa-alamat-asal" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="Kabupaten/Provinsi asal">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagian Input Dinamis Khusus: MUTASI KELUAR -->
+        <div id="field-status-mutasi-keluar" class="hidden border-t border-slate-100 pt-4 space-y-4">
+          <p class="text-[10px] font-extrabold text-amber-600 uppercase tracking-widest">Informasi Mutasi Keluar</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Tanggal Keluar</label>
+              <input type="date" id="siswa-tgl-keluar" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Sekolah Tujuan</label>
+              <input type="text" id="siswa-sekolah-tujuan" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="SD tujuan baru">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Alamat Tujuan</label>
+              <input type="text" id="siswa-alamat-tujuan" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="Kabupaten/Provinsi tujuan">
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer Buttons -->
+        <div class="flex justify-end space-x-2 pt-4 border-t border-slate-100">
+          <button type="button" onclick="closeFormSiswaModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-xs">Batal</button>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-5 rounded-xl text-xs">Simpan Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT UTAMA APLIKASI -->
+  <script>
+    // Helper function untuk menghitung mundur Tahun Ajaran
+    function shiftSchoolYear(baseTa, offset) {
+      if (!baseTa) return "-";
+      const parts = baseTa.split("/");
+      if (parts.length !== 2) return baseTa;
+      const start = parseInt(parts[0]) + offset;
+      const end = parseInt(parts[1]) + offset;
+      return `${start}/${end}`;
+    }
+
+    // --- STATE UTAMA (In-Memory dengan sinkronisasi ke LocalStorage) ---
+    let state = {
+      kelas: ["Kelas 1A", "Kelas 2A", "Kelas 3A", "Kelas 4A", "Kelas 5A", "Kelas 6A"],
+      tahunAjaran: ["2023/2024", "2024/2025", "2025/2026"],
+      taAktif: "2025/2026",
+      siswa: [],
+      nilai: {}, // Format: { [nis_semester_kelas]: { mapel: nilai, ... } }
+      absensi: {}, // Format: { [nis_semester_kelas]: { sakit, izin, alpa, catatan } }
+    };
+
+    // Data Simulasi Bawaan saat aplikasi dibuka pertama kali
+    const initialSiswa = [
+      { id: "s1", nama: "Achmad Dhani", nis: "2101", nisn: "0123456789", kelas: "Kelas 6A", jk: "L", status: "Lulus", ta: "2023/2024", noIjazah: "DN-02/D-SD/2024/001", tglLulus: "2024-06-15", rataRata: 87.50 },
+      { id: "s2", nama: "Siti Rahmawati", nis: "2102", nisn: "0123456790", kelas: "Kelas 6A", jk: "P", status: "Lulus", ta: "2023/2024", noIjazah: "DN-02/D-SD/2024/002", tglLulus: "2024-06-15", rataRata: 91.25 },
+      { id: "s3", nama: "Farhan Maulana", nis: "2201", nisn: "0123456811", kelas: "Kelas 5A", jk: "L", status: "Aktif", ta: "2024/2025" },
+      { id: "s4", nama: "Alya Nabila", nis: "2202", nisn: "0123456822", kelas: "Kelas 5A", jk: "P", status: "Aktif", ta: "2024/2025" },
+      { id: "s5", nama: "Rizky Ramadhan", nis: "2301", nisn: "0123456933", kelas: "Kelas 4A", jk: "L", status: "Mutasi Masuk", ta: "2025/2026", tglMasuk: "2025-08-01", sekolahAsal: "SDN Karawang 2", alamatAsal: "Karawang Barat" },
+      { id: "s6", nama: "Naila Putri", nis: "2302", nisn: "0123456944", kelas: "Kelas 4A", jk: "P", status: "Mutasi Keluar", ta: "2025/2026", tglKeluar: "2025-12-10", sekolahTujuan: "SDIT Bekasi", alamatTujuan: "Bekasi Timur" }
+    ];
+
+    // Data Simulasi Nilai Bawaan untuk Alumni Achmad Dhani (Untuk mendemonstrasikan Leger Alumni dari kelas 1-6)
+    const initialNilai = {
+      // Kelas 1 (TA 2018/2019)
+      "2101_1_Kelas 1A": { ppkn: 80, pai: 85, indo: 80, mtk: 75, ipas: 80, ipa: 80, ips: 80, sbdp: 85, pjok: 85, sunda: 75, inggris: 70 },
+      "2101_2_Kelas 1A": { ppkn: 82, pai: 87, indo: 81, mtk: 78, ipas: 82, ipa: 82, ips: 81, sbdp: 86, pjok: 86, sunda: 76, inggris: 72 },
+      // Kelas 2 (TA 2019/2020)
+      "2101_1_Kelas 2A": { ppkn: 83, pai: 86, indo: 84, mtk: 80, ipas: 81, ipa: 83, ips: 82, sbdp: 85, pjok: 87, sunda: 78, inggris: 75 },
+      "2101_2_Kelas 2A": { ppkn: 85, pai: 88, indo: 85, mtk: 82, ipas: 83, ipa: 85, ips: 83, sbdp: 88, pjok: 88, sunda: 80, inggris: 78 },
+      // Kelas 3 (TA 2020/2021)
+      "2101_1_Kelas 3A": { ppkn: 84, pai: 85, indo: 86, mtk: 81, ipas: 85, ipa: 84, ips: 84, sbdp: 87, pjok: 89, sunda: 81, inggris: 80 },
+      "2101_2_Kelas 3A": { ppkn: 86, pai: 89, indo: 88, mtk: 85, ipas: 87, ipa: 86, ips: 85, sbdp: 89, pjok: 90, sunda: 83, inggris: 82 },
+      // Kelas 4 (TA 2021/2022)
+      "2101_1_Kelas 4A": { ppkn: 87, pai: 90, indo: 87, mtk: 84, ipas: 88, ipa: 87, ips: 86, sbdp: 88, pjok: 91, sunda: 84, inggris: 83 },
+      "2101_2_Kelas 4A": { ppkn: 88, pai: 92, indo: 89, mtk: 88, ipas: 89, ipa: 88, ips: 88, sbdp: 90, pjok: 92, sunda: 86, inggris: 85 },
+      // Kelas 5 (TA 2022/2023)
+      "2101_1_Kelas 5A": { ppkn: 89, pai: 91, indo: 88, mtk: 86, ipas: 90, ipa: 89, ips: 87, sbdp: 89, pjok: 93, sunda: 85, inggris: 84 },
+      "2101_2_Kelas 5A": { ppkn: 90, pai: 93, indo: 90, mtk: 89, ipas: 91, ipa: 90, ips: 89, sbdp: 91, pjok: 94, sunda: 87, inggris: 86 },
+      // Kelas 6 (TA 2023/2024)
+      "2101_1_Kelas 6A": { ppkn: 90, pai: 94, indo: 91, mtk: 90, ipas: 92, ipa: 91, ips: 90, sbdp: 92, pjok: 95, sunda: 88, inggris: 87 },
+      "2101_2_Kelas 6A": { ppkn: 92, pai: 95, indo: 93, mtk: 92, ipas: 93, ipa: 92, ips: 91, sbdp: 94, pjok: 96, sunda: 90, inggris: 89 },
+    };
+
+    const initialAbsensi = {
+      "2101_1_Kelas 6A": { sakit: 1, izin: 2, alpa: 0, catatan: "Terus tingkatkan belajarmu, raihlah prestasi gemilang!" },
+      "2101_2_Kelas 6A": { sakit: 0, izin: 1, alpa: 0, catatan: "Sangat rajin dan memiliki kepemimpinan yang baik." }
+    };
+
+    // Inisialisasi Data ke LocalStorage
+    function loadSavedState() {
+      const saved = localStorage.getItem("sdit_annihayah_admin_state");
+      if (saved) {
+        state = JSON.parse(saved);
+      } else {
+        state.siswa = initialSiswa;
+        state.nilai = initialNilai;
+        state.absensi = initialAbsensi;
+        saveState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem("sdit_annihayah_admin_state", JSON.stringify(state));
+    }
+
+    // --- CHART JS INSTANCE ---
+    let myChartInstance = null;
+
+    // --- ON LOAD ---
+    window.onload = function() {
+      loadSavedState();
+      
+      // Setup Login Submit
+      document.getElementById("login-form").onsubmit = function(e) {
+        e.preventDefault();
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        if (u === "admin" && p === "admin123") {
+          document.getElementById("login-screen").classList.add("hidden");
+          document.getElementById("main-screen").classList.remove("hidden");
+          showToast("Selamat datang kembali, Admin SDIT ANNIHAYAH!");
+          initDashboard();
+        } else {
+          showToast("Username atau sandi salah!", true);
+        }
+      };
+
+      // Tampilkan TA Aktif di header
+      document.getElementById("header-ta-badge").innerText = state.taAktif;
+
+      // Isi daftar option filter / dropdown
+      populateSelectors();
+    };
+
+    // --- TOAST NOTIFICATION ---
+    function showToast(message, isError = false) {
+      const t = document.getElementById("toast");
+      const m = document.getElementById("toast-message");
+      m.innerText = message;
+      if (isError) {
+        t.classList.remove("bg-emerald-600");
+        t.classList.add("bg-rose-600");
+      } else {
+        t.classList.remove("bg-rose-600");
+        t.classList.add("bg-emerald-600");
+      }
+      t.classList.remove("translate-y-[-100px]", "opacity-0");
+      t.classList.add("translate-y-0", "opacity-100");
+      setTimeout(() => {
+        t.classList.remove("translate-y-0", "opacity-100");
+        t.classList.add("translate-y-[-100px]", "opacity-0");
+      }, 3000);
+    }
+
+    // --- TOGGLE MOBILE SIDEBAR ---
+    function toggleMobileMenu() {
+      const aside = document.querySelector("aside");
+      aside.classList.toggle("hidden");
+    }
+
+    // --- TAB SWITCHER ---
+    function switchTab(tabId) {
+      // Sembunyikan semua tab content
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      // Tampilkan tab target
+      document.getElementById("tab-" + tabId).classList.remove("hidden");
+
+      // Hapus kelas aktif di sidebar
+      document.querySelectorAll(".nav-btn").forEach(el => {
+        el.className = "nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-400 hover:bg-slate-800 hover:text-slate-200";
+      });
+
+      // Tambahkan kelas aktif ke tombol yang diklik
+      const btn = document.getElementById("nav-" + tabId);
+      if (btn) {
+        btn.className = "nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition bg-emerald-600 text-white";
+      }
+
+      // Update Topbar Title
+      const titles = {
+        'dashboard': 'Dashboard Statistik & Grafik',
+        'data-siswa': 'Data Induk Siswa',
+        'rekap-mutasi': 'Rekapitulasi Mutasi Siswa',
+        'riwayat-alumni': 'Pusat Arsip Alumni (Lulus)',
+        'nilai-rapor': 'Input Nilai Rapor Siswa',
+        'absensi-catatan': 'Input Absensi & Catatan Wali Kelas',
+        'leger-rapor': 'Leger Nilai Rapor Siswa',
+        'cetak-rapor': 'Cetak Rapor Siswa',
+        'settings': 'Pengaturan Kelas & Tahun Ajaran'
+      };
+      document.getElementById("page-title").innerText = titles[tabId] || "SDIT ANNIHAYAH";
+
+      // Trigger load khusus di tiap tab
+      if (tabId === 'dashboard') {
+        initDashboard();
+      } else if (tabId === 'data-siswa') {
+        renderSiswaTable();
+      } else if (tabId === 'rekap-mutasi') {
+        renderMutasiRecap();
+      } else if (tabId === 'riwayat-alumni') {
+        populateAlumniSelector();
+      } else if (tabId === 'nilai-rapor') {
+        onPilihKelasUbah();
+      } else if (tabId === 'absensi-catatan') {
+        onPilihKelasAbsensiUbah();
+      } else if (tabId === 'leger-rapor') {
+        renderLegerRapor();
+      } else if (tabId === 'cetak-rapor') {
+        onPilihKelasCetakUbah();
+      } else if (tabId === 'settings') {
+        renderSettingsLists();
+      }
+    }
+
+    // --- LOGOUT ---
+    function logout() {
+      document.getElementById("main-screen").classList.add("hidden");
+      document.getElementById("login-screen").classList.remove("hidden");
+      showToast("Berhasil keluar.");
+    }
+
+    // --- RE-POPULATE SELECTOR DATA ---
+    function populateSelectors() {
+      // Filter siswa kelas
+      const fk = document.getElementById("filter-kelas");
+      fk.innerHTML = `<option value="Semua">Semua Kelas</option>`;
+      state.kelas.forEach(k => {
+        fk.innerHTML += `<option value="${k}">${k}</option>`;
+      });
+
+      // Form tambah/edit kelas
+      const sk = document.getElementById("siswa-kelas");
+      sk.innerHTML = "";
+      state.kelas.forEach(k => {
+        sk.innerHTML += `<option value="${k}">${k}</option>`;
+      });
+
+      // Form tambah/edit TA
+      const sta = document.getElementById("siswa-ta");
+      sta.innerHTML = "";
+      state.tahunAjaran.forEach(t => {
+        sta.innerHTML += `<option value="${t}">${t}</option>`;
+      });
+
+      // Nilai, Absensi, Leger, Cetak Kelas Dropdowns
+      ["nilai-pilih-kelas", "absensi-pilih-kelas", "leger-pilih-kelas", "cetak-pilih-kelas"].forEach(id => {
+        const select = document.getElementById(id);
+        if (select) {
+          select.innerHTML = "";
+          state.kelas.forEach(k => {
+            select.innerHTML += `<option value="${k}">${k}</option>`;
+          });
+        }
+      });
+    }
+
+    // ==================== LOGIKA TAB: DASHBOARD ====================
+    function initDashboard() {
+      // 1. Hitung Statistik
+      const totalSiswaAktif = state.siswa.filter(s => s.status === 'Aktif').length;
+      const totalLaki = state.siswa.filter(s => s.status === 'Aktif' && s.jk === 'L').length;
+      const totalPerempuan = state.siswa.filter(s => s.status === 'Aktif' && s.jk === 'P').length;
+      const totalMutasiMasuk = state.siswa.filter(s => s.status === 'Mutasi Masuk').length;
+      const totalMutasiKeluar = state.siswa.filter(s => s.status === 'Mutasi Keluar').length;
+      const totalLulus = state.siswa.filter(s => s.status === 'Lulus').length;
+
+      document.getElementById("stat-aktif").innerText = totalSiswaAktif;
+      document.getElementById("stat-laki").innerText = totalLaki;
+      document.getElementById("stat-perempuan").innerText = totalPerempuan;
+      document.getElementById("stat-mutasi-masuk").innerText = totalMutasiMasuk;
+      document.getElementById("stat-mutasi-keluar").innerText = totalMutasiKeluar;
+      document.getElementById("stat-lulus").innerText = totalLulus;
+
+      // 2. Render Rekap per Kelas
+      const recapContainer = document.getElementById("dashboard-class-recap");
+      recapContainer.innerHTML = "";
+      state.kelas.forEach(k => {
+        const siswaKelas = state.siswa.filter(s => s.kelas === k && s.status === 'Aktif');
+        const l = siswaKelas.filter(s => s.jk === 'L').length;
+        const p = siswaKelas.filter(s => s.jk === 'P').length;
+        recapContainer.innerHTML += `
+          <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl">
+            <div>
+              <h4 class="font-bold text-xs text-slate-800">${k}</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">Laki: ${l} | Perempuan: ${p}</p>
+            </div>
+            <span class="text-xs font-extrabold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg">${siswaKelas.length} Siswa</span>
+          </div>
+        `;
+      });
+
+      // 3. Render Chart
+      const ctx = document.getElementById('dashboardChart').getContext('2d');
+      if (myChartInstance) {
+        myChartInstance.destroy();
+      }
+
+      myChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Siswa Aktif', 'Laki-Laki', 'Perempuan', 'Mutasi Masuk', 'Mutasi Keluar', 'Alumni/Lulus'],
+          datasets: [{
+            label: 'Total Siswa',
+            data: [totalSiswaAktif, totalLaki, totalPerempuan, totalMutasiMasuk, totalMutasiKeluar, totalLulus],
+            backgroundColor: [
+              'rgba(99, 102, 241, 0.85)', // Indigo
+              'rgba(59, 130, 246, 0.85)', // Blue
+              'rgba(244, 63, 94, 0.85)',  // Rose
+              'rgba(16, 185, 129, 0.85)', // Emerald
+              'rgba(245, 158, 11, 0.85)', // Amber
+              'rgba(139, 92, 246, 0.85)'  // Violet
+            ],
+            borderRadius: 12,
+            borderWidth: 0,
+            barThickness: 28,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(241, 245, 249, 1)' }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ==================== LOGIKA TAB: DATA SISWA INDUK ====================
+    let filterStatus = "Semua";
+    let sortColumnSiswa = "nama";
+    let sortAscSiswa = true;
+
+    function renderSiswaTable() {
+      const q = document.getElementById("search-siswa").value.toLowerCase();
+      const st = document.getElementById("filter-status").value;
+      const kl = document.getElementById("filter-kelas").value;
+      const tbody = document.getElementById("siswa-table-body");
+      
+      tbody.innerHTML = "";
+
+      let filtered = state.siswa.filter(s => {
+        const matchQuery = s.nama.toLowerCase().includes(q) || s.nis.toLowerCase().includes(q) || s.nisn.toLowerCase().includes(q);
+        const matchStatus = (st === "Semua") || (s.status === st);
+        const matchKelas = (kl === "Semua") || (s.kelas === kl);
+        return matchQuery && matchStatus && matchKelas;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        let valA = a[sortColumnSiswa] || "";
+        let valB = b[sortColumnSiswa] || "";
+        if (typeof valA === "string") valA = valA.toLowerCase();
+        if (typeof valB === "string") valB = valB.toLowerCase();
+        
+        if (valA < valB) return sortAscSiswa ? -1 : 1;
+        if (valA > valB) return sortAscSiswa ? 1 : -1;
+        return 0;
+      });
+
+      filtered.forEach((s) => {
+        let statusBadge = "";
+        if (s.status === "Aktif") statusBadge = '<span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full font-bold text-[10px]">Aktif</span>';
+        else if (s.status === "Mutasi Masuk") statusBadge = '<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full font-bold text-[10px]">Mutasi Masuk</span>';
+        else if (s.status === "Mutasi Keluar") statusBadge = '<span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full font-bold text-[10px]">Mutasi Keluar</span>';
+        else statusBadge = '<span class="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full font-bold text-[10px]">Lulus</span>';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-4 font-bold text-slate-800">${s.nama}</td>
+            <td class="p-4 text-slate-500">${s.nis}</td>
+            <td class="p-4 text-slate-500">${s.nisn}</td>
+            <td class="p-4 font-semibold text-slate-600">${s.kelas}</td>
+            <td class="p-4 text-center font-bold text-slate-500">${s.jk}</td>
+            <td class="p-4">${statusBadge}</td>
+            <td class="p-4 font-medium text-slate-500">${s.ta}</td>
+            <td class="p-4 text-right space-x-1">
+              <button onclick="editSiswa('${s.id}')" class="text-indigo-600 hover:text-indigo-800 p-1.5 hover:bg-indigo-50 rounded-lg transition" title="Edit Data"><i class="fas fa-edit"></i></button>
+              <button onclick="hapusSiswa('${s.id}')" class="text-rose-600 hover:text-rose-800 p-1.5 hover:bg-rose-50 rounded-lg transition" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("siswa-table-info").innerText = `Menampilkan ${filtered.length} dari ${state.siswa.length} data siswa`;
+    }
+
+    function filterSiswaTable() {
+      renderSiswaTable();
+    }
+
+    function sortTableSiswa(col) {
+      if (sortColumnSiswa === col) {
+        sortAscSiswa = !sortAscSiswa;
+      } else {
+        sortColumnSiswa = col;
+        sortAscSiswa = true;
+      }
+      renderSiswaTable();
+    }
+
+    // --- FORM POPUPS & SAVE ---
+    function openFormSiswaModal() {
+      document.getElementById("siswa-form").reset();
+      document.getElementById("siswa-edit-id").value = "";
+      document.getElementById("siswa-modal-title").innerHTML = '<i class="fas fa-user-plus"></i><span>Tambah Data Siswa Baru</span>';
+      
+      populateSelectors();
+      toggleStatusFields();
+      
+      document.getElementById("siswa-modal").classList.remove("hidden");
+    }
+
+    function closeFormSiswaModal() {
+      document.getElementById("siswa-modal").classList.add("hidden");
+    }
+
+    function toggleStatusFields() {
+      const status = document.getElementById("siswa-status").value;
+      
+      document.getElementById("field-status-lulus").classList.add("hidden");
+      document.getElementById("field-status-mutasi-masuk").classList.add("hidden");
+      document.getElementById("field-status-mutasi-keluar").classList.add("hidden");
+
+      if (status === "Lulus") {
+        document.getElementById("field-status-lulus").classList.remove("hidden");
+      } else if (status === "Mutasi Masuk") {
+        document.getElementById("field-status-mutasi-masuk").classList.remove("hidden");
+      } else if (status === "Mutasi Keluar") {
+        document.getElementById("field-status-mutasi-keluar").classList.remove("hidden");
+      }
+    }
+
+    function saveSiswa(e) {
+      e.preventDefault();
+      const id = document.getElementById("siswa-edit-id").value;
+      const nama = document.getElementById("siswa-nama").value;
+      const nis = document.getElementById("siswa-nis").value;
+      const nisn = document.getElementById("siswa-nisn").value;
+      const kelas = document.getElementById("siswa-kelas").value;
+      const jk = document.getElementById("siswa-jk").value;
+      const status = document.getElementById("siswa-status").value;
+      const ta = document.getElementById("siswa-ta").value;
+
+      let extraData = {};
+      if (status === "Lulus") {
+        extraData = {
+          noIjazah: document.getElementById("siswa-no-ijazah").value,
+          tglLulus: document.getElementById("siswa-tgl-lulus").value,
+          rataRata: parseFloat(document.getElementById("siswa-rata-rata").value) || 0
+        };
+      } else if (status === "Mutasi Masuk") {
+        extraData = {
+          tglMasuk: document.getElementById("siswa-tgl-masuk").value,
+          sekolahAsal: document.getElementById("siswa-sekolah-asal").value,
+          alamatAsal: document.getElementById("siswa-alamat-asal").value
+        };
+      } else if (status === "Mutasi Keluar") {
+        extraData = {
+          tglKeluar: document.getElementById("siswa-tgl-keluar").value,
+          sekolahTujuan: document.getElementById("siswa-sekolah-tujuan").value,
+          alamatTujuan: document.getElementById("siswa-alamat-tujuan").value
+        };
+      }
+
+      if (id) {
+        // Edit
+        const idx = state.siswa.findIndex(s => s.id === id);
+        if (idx !== -1) {
+          state.siswa[idx] = { id, nama, nis, nisn, kelas, jk, status, ta, ...extraData };
+          showToast("Data siswa berhasil diperbarui.");
+        }
+      } else {
+        // Tambah Baru
+        const newSiswa = { id: "s_" + Date.now(), nama, nis, nisn, kelas, jk, status, ta, ...extraData };
+        state.siswa.push(newSiswa);
+        showToast("Data siswa baru berhasil ditambahkan.");
+      }
+
+      saveState();
+      closeFormSiswaModal();
+      renderSiswaTable();
+    }
+
+    function editSiswa(id) {
+      const s = state.siswa.find(x => x.id === id);
+      if (!s) return;
+
+      populateSelectors();
+
+      document.getElementById("siswa-edit-id").value = s.id;
+      document.getElementById("siswa-nama").value = s.nama;
+      document.getElementById("siswa-nis").value = s.nis;
+      document.getElementById("siswa-nisn").value = s.nisn;
+      document.getElementById("siswa-kelas").value = s.kelas;
+      document.getElementById("siswa-jk").value = s.jk;
+      document.getElementById("siswa-status").value = s.status;
+      document.getElementById("siswa-ta").value = s.ta;
+
+      toggleStatusFields();
+
+      if (s.status === "Lulus") {
+        document.getElementById("siswa-no-ijazah").value = s.noIjazah || "";
+        document.getElementById("siswa-tgl-lulus").value = s.tglLulus || "";
+        document.getElementById("siswa-rata-rata").value = s.rataRata || "";
+      } else if (s.status === "Mutasi Masuk") {
+        document.getElementById("siswa-tgl-masuk").value = s.tglMasuk || "";
+        document.getElementById("siswa-sekolah-asal").value = s.sekolahAsal || "";
+        document.getElementById("siswa-alamat-asal").value = s.alamatAsal || "";
+      } else if (s.status === "Mutasi Keluar") {
+        document.getElementById("siswa-tgl-keluar").value = s.tglKeluar || "";
+        document.getElementById("siswa-sekolah-tujuan").value = s.sekolahTujuan || "";
+        document.getElementById("siswa-alamat-tujuan").value = s.alamatTujuan || "";
+      }
+
+      document.getElementById("siswa-modal-title").innerHTML = '<i class="fas fa-edit"></i><span>Edit Data Siswa</span>';
+      document.getElementById("siswa-modal").classList.remove("hidden");
+    }
+
+    function hapusSiswa(id) {
+      if (confirm("Apakah Anda yakin ingin menghapus data siswa ini? Semua arsip yang melekat juga akan terhapus.")) {
+        state.siswa = state.siswa.filter(s => s.id !== id);
+        saveState();
+        showToast("Siswa berhasil dihapus.");
+        renderSiswaTable();
+      }
+    }
+
+    // ==================== LOGIKA TAB: REKAP MUTASI ====================
+    function renderMutasiRecap() {
+      const masukBody = document.getElementById("mutasi-masuk-table-body");
+      const keluarBody = document.getElementById("mutasi-keluar-table-body");
+      
+      masukBody.innerHTML = "";
+      keluarBody.innerHTML = "";
+
+      const mutasiMasuk = state.siswa.filter(s => s.status === 'Mutasi Masuk');
+      const mutasiKeluar = state.siswa.filter(s => s.status === 'Mutasi Keluar');
+
+      document.getElementById("count-mutasi-masuk").innerText = `${mutasiMasuk.length} Siswa`;
+      document.getElementById("count-mutasi-keluar").innerText = `${mutasiKeluar.length} Siswa`;
+
+      mutasiMasuk.forEach(s => {
+        masukBody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 font-semibold text-slate-800">${s.nama} (${s.nis})</td>
+            <td class="p-2 text-slate-500">${s.tglMasuk || '-'}</td>
+            <td class="p-2 text-slate-500">${s.sekolahAsal || '-'} <br><span class="text-[9px] text-slate-400">${s.alamatAsal || ''}</span></td>
+          </tr>
+        `;
+      });
+
+      mutasiKeluar.forEach(s => {
+        keluarBody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 font-semibold text-slate-800">${s.nama} (${s.nis})</td>
+            <td class="p-2 text-slate-500">${s.tglKeluar || '-'}</td>
+            <td class="p-2 text-slate-500">${s.sekolahTujuan || '-'} <br><span class="text-[9px] text-slate-400">${s.alamatTujuan || ''}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    // ==================== LOGIKA TAB: RIWAYAT ALUMNI ====================
+    function populateAlumniSelector() {
+      const sel = document.getElementById("alumni-selector");
+      sel.innerHTML = `<option value="">-- Pilih Siswa Alumni --</option>`;
+      
+      const alumni = state.siswa.filter(s => s.status === "Lulus");
+      alumni.forEach(s => {
+        sel.innerHTML += `<option value="${s.nis}">${s.nama} (${s.nis})</option>`;
+      });
+      document.getElementById("alumni-data-section").classList.add("hidden");
+    }
+
+    function loadAlumniProfile() {
+      const nis = document.getElementById("alumni-selector").value;
+      if (!nis) {
+        document.getElementById("alumni-data-section").classList.add("hidden");
+        return;
+      }
+
+      const s = state.siswa.find(x => x.nis === nis && x.status === "Lulus");
+      if (!s) return;
+
+      // Render Profil Card
+      document.getElementById("alumni-nama").innerText = s.nama;
+      document.getElementById("alumni-nis-nisn").innerText = `NIS: ${s.nis} / NISN: ${s.nisn}`;
+      document.getElementById("alumni-tgl-masuk").innerText = s.tglMasuk || "Tgl masuk tidak tercatat";
+      document.getElementById("alumni-tgl-lulus").innerText = s.tglLulus || "-";
+      document.getElementById("alumni-no-ijazah").innerText = s.noIjazah || "-";
+      document.getElementById("alumni-nilai-rata").innerText = s.rataRata ? s.rataRata.toFixed(2) : "-";
+
+      // Render Leger Nilai Semester 1 s/d 12 (Kelas 1 - 6)
+      const legerBody = document.getElementById("alumni-leger-body");
+      legerBody.innerHTML = "";
+
+      // Memetakan struktur semester 1-12 berdasarkan standard Kelas 1A-6A
+      const mapSemester = [
+        { label: "Kelas 1 - Ganjil", key: `${nis}_1_Kelas 1A`, ta: shiftSchoolYear(s.ta, -5) },
+        { label: "Kelas 1 - Genap", key: `${nis}_2_Kelas 1A`, ta: shiftSchoolYear(s.ta, -5) },
+        { label: "Kelas 2 - Ganjil", key: `${nis}_1_Kelas 2A`, ta: shiftSchoolYear(s.ta, -4) },
+        { label: "Kelas 2 - Genap", key: `${nis}_2_Kelas 2A`, ta: shiftSchoolYear(s.ta, -4) },
+        { label: "Kelas 3 - Ganjil", key: `${nis}_1_Kelas 3A`, ta: shiftSchoolYear(s.ta, -3) },
+        { label: "Kelas 3 - Genap", key: `${nis}_2_Kelas 3A`, ta: shiftSchoolYear(s.ta, -3) },
+        { label: "Kelas 4 - Ganjil", key: `${nis}_1_Kelas 4A`, ta: shiftSchoolYear(s.ta, -2) },
+        { label: "Kelas 4 - Genap", key: `${nis}_2_Kelas 4A`, ta: shiftSchoolYear(s.ta, -2) },
+        { label: "Kelas 5 - Ganjil", key: `${nis}_1_Kelas 5A`, ta: shiftSchoolYear(s.ta, -1) },
+        { label: "Kelas 5 - Genap", key: `${nis}_2_Kelas 5A`, ta: shiftSchoolYear(s.ta, -1) },
+        { label: "Kelas 6 - Ganjil", key: `${nis}_1_Kelas 6A`, ta: shiftSchoolYear(s.ta, 0) },
+        { label: "Kelas 6 - Genap", key: `${nis}_2_Kelas 6A`, ta: shiftSchoolYear(s.ta, 0) },
+      ];
+
+      mapSemester.forEach(sem => {
+        const n = state.nilai[sem.key] || {};
+        const values = [
+          n.ppkn || 0, n.pai || 0, n.indo || 0, n.mtk || 0, n.ipas || 0,
+          n.ipa || 0, n.ips || 0, n.sbdp || 0, n.pjok || 0, n.sunda || 0, n.inggris || 0
+        ];
+        
+        // Cek apakah data nilai ada yang terisi
+        const isDataExists = values.some(val => val > 0);
+        const sum = values.reduce((a, b) => a + b, 0);
+        const avg = isDataExists ? (sum / values.length).toFixed(1) : "-";
+
+        legerBody.innerHTML += `
+          <tr class="hover:bg-slate-50 text-[11px] ${!isDataExists ? 'text-slate-400 italic' : 'text-slate-700'}">
+            <td class="p-2 font-bold">${sem.label}</td>
+            <td class="p-2 text-slate-500 font-semibold">${sem.ta}</td>
+            <td class="p-2">${n.ppkn || '-'}</td>
+            <td class="p-2">${n.pai || '-'}</td>
+            <td class="p-2">${n.indo || '-'}</td>
+            <td class="p-2">${n.mtk || '-'}</td>
+            <td class="p-2">${n.ipas || '-'}</td>
+            <td class="p-2">${n.ipa || '-'}</td>
+            <td class="p-2">${n.ips || '-'}</td>
+            <td class="p-2">${n.sbdp || '-'}</td>
+            <td class="p-2">${n.pjok || '-'}</td>
+            <td class="p-2">${n.sunda || '-'}</td>
+            <td class="p-2">${n.inggris || '-'}</td>
+            <td class="p-2 font-bold text-center bg-indigo-50/50 text-indigo-700">${avg}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("alumni-data-section").classList.remove("hidden");
+    }
+
+    // ==================== LOGIKA TAB: INPUT NILAI RAPOR ====================
+    function onPilihKelasUbah() {
+      const k = document.getElementById("nilai-pilih-kelas").value;
+      const selectSiswa = document.getElementById("nilai-pilih-siswa");
+      selectSiswa.innerHTML = `<option value="">-- Pilih Siswa --</option>`;
+
+      // Cari siswa di kelas ini yang aktif atau baru dimutasi masuk
+      const siswaKelas = state.siswa.filter(s => s.kelas === k && (s.status === 'Aktif' || s.status === 'Mutasi Masuk'));
+      siswaKelas.forEach(s => {
+        selectSiswa.innerHTML += `<option value="${s.nis}">${s.nama} (${s.nis})</option>`;
+      });
+
+      document.getElementById("nilai-form-section").classList.add("hidden");
+    }
+
+    // Load data nilai
+    function loadFormNilaiSiswa() {
+      const nis = document.getElementById("nilai-pilih-siswa").value;
+      const sem = document.getElementById("nilai-pilih-semester").value;
+      const kelas = document.getElementById("nilai-pilih-kelas").value;
+
+      if (!nis || !sem) {
+        document.getElementById("nilai-form-section").classList.add("hidden");
+        return;
+      }
+
+      const s = state.siswa.find(x => x.nis === nis);
+      document.getElementById("nilai-nama-siswa-display").innerText = s ? s.nama : "";
+
+      const key = `${nis}_${sem}_${kelas}`;
+      const n = state.nilai[key] || {};
+
+      document.getElementById("n-ppkn").value = n.ppkn || "";
+      document.getElementById("n-pai").value = n.pai || "";
+      document.getElementById("n-indo").value = n.indo || "";
+      document.getElementById("n-mtk").value = n.mtk || "";
+      document.getElementById("n-ipas").value = n.ipas || "";
+      document.getElementById("n-ipa").value = n.ipa || "";
+      document.getElementById("n-ips").value = n.ips || "";
+      document.getElementById("n-sbdp").value = n.sbdp || "";
+      document.getElementById("n-pjok").value = n.pjok || "";
+      document.getElementById("n-sunda").value = n.sunda || "";
+      document.getElementById("n-inggris").value = n.inggris || "";
+
+      document.getElementById("nilai-form-section").classList.remove("hidden");
+    }
+
+    function simpanNilaiRapor() {
+      const nis = document.getElementById("nilai-pilih-siswa").value;
+      const sem = document.getElementById("nilai-pilih-semester").value;
+      const kelas = document.getElementById("nilai-pilih-kelas").value;
+      const key = `${nis}_${sem}_${kelas}`;
+
+      state.nilai[key] = {
+        ppkn: parseInt(document.getElementById("n-ppkn").value) || 0,
+        pai: parseInt(document.getElementById("n-pai").value) || 0,
+        indo: parseInt(document.getElementById("n-indo").value) || 0,
+        mtk: parseInt(document.getElementById("n-mtk").value) || 0,
+        ipas: parseInt(document.getElementById("n-ipas").value) || 0,
+        ipa: parseInt(document.getElementById("n-ipa").value) || 0,
+        ips: parseInt(document.getElementById("n-ips").value) || 0,
+        sbdp: parseInt(document.getElementById("n-sbdp").value) || 0,
+        pjok: parseInt(document.getElementById("n-pjok").value) || 0,
+        sunda: parseInt(document.getElementById("n-sunda").value) || 0,
+        inggris: parseInt(document.getElementById("n-inggris").value) || 0,
+      };
+
+      saveState();
+      showToast("Data nilai berhasil disimpan.");
+    }
+
+    // ==================== LOGIKA TAB: ABSENSI & CATATAN ====================
+    function onPilihKelasAbsensiUbah() {
+      const k = document.getElementById("absensi-pilih-kelas").value;
+      const selectSiswa = document.getElementById("absensi-pilih-siswa");
+      selectSiswa.innerHTML = `<option value="">-- Pilih Siswa --</option>`;
+
+      const siswaKelas = state.siswa.filter(s => s.kelas === k && (s.status === 'Aktif' || s.status === 'Mutasi Masuk'));
+      siswaKelas.forEach(s => {
+        selectSiswa.innerHTML += `<option value="${s.nis}">${s.nama} (${s.nis})</option>`;
+      });
+
+      document.getElementById("absensi-form-section").classList.add("hidden");
+    }
+
+    function loadFormAbsensiSiswa() {
+      const nis = document.getElementById("absensi-pilih-siswa").value;
+      const sem = document.getElementById("absensi-pilih-semester").value;
+      const kelas = document.getElementById("absensi-pilih-kelas").value;
+
+      if (!nis || !sem) {
+        document.getElementById("absensi-form-section").classList.add("hidden");
+        return;
+      }
+
+      const s = state.siswa.find(x => x.nis === nis);
+      document.getElementById("absensi-nama-siswa-display").innerText = s ? s.nama : "";
+
+      const key = `${nis}_${sem}_${kelas}`;
+      const a = state.absensi[key] || {};
+
+      document.getElementById("abs-sakit").value = a.sakit || 0;
+      document.getElementById("abs-izin").value = a.izin || 0;
+      document.getElementById("abs-alpa").value = a.alpa || 0;
+      document.getElementById("catatan-guru").value = a.catatan || "";
+
+      document.getElementById("absensi-form-section").classList.remove("hidden");
+    }
+
+    function simpanAbsensiCatatan() {
+      const nis = document.getElementById("absensi-pilih-siswa").value;
+      const sem = document.getElementById("absensi-pilih-semester").value;
+      const kelas = document.getElementById("absensi-pilih-kelas").value;
+      const key = `${nis}_${sem}_${kelas}`;
+
+      state.absensi[key] = {
+        sakit: parseInt(document.getElementById("abs-sakit").value) || 0,
+        izin: parseInt(document.getElementById("abs-izin").value) || 0,
+        alpa: parseInt(document.getElementById("abs-alpa").value) || 0,
+        catatan: document.getElementById("catatan-guru").value
+      };
+
+      saveState();
+      showToast("Absensi & Catatan wali kelas berhasil disimpan.");
+    }
+
+    // ==================== LOGIKA TAB: LEGER RAPOR KELAS ====================
+    function renderLegerRapor() {
+      const kelas = document.getElementById("leger-pilih-kelas").value;
+      const sem = document.getElementById("leger-pilih-semester").value;
+      const semLabel = sem === "1" ? "Ganjil (1)" : "Genap (2)";
+
+      document.getElementById("leger-subtitle").innerText = `Kelas: ${kelas} | Semester: ${semLabel}`;
+
+      const tbody = document.getElementById("leger-table-body");
+      tbody.innerHTML = "";
+
+      // Cari seluruh siswa di kelas ini (bisa aktif, mutasi masuk)
+      const siswaList = state.siswa.filter(s => s.kelas === kelas && (s.status === 'Aktif' || s.status === 'Mutasi Masuk'));
+
+      if (siswaList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="15" class="p-4 text-center text-slate-400 italic">Tidak ada siswa terdaftar di kelas ini</td></tr>`;
+        return;
+      }
+
+      siswaList.forEach((s, i) => {
+        const key = `${s.nis}_${sem}_${kelas}`;
+        const n = state.nilai[key] || {};
+        const mapelNilai = [
+          n.ppkn || 0, n.pai || 0, n.indo || 0, n.mtk || 0, n.ipas || 0,
+          n.ipa || 0, n.ips || 0, n.sbdp || 0, n.pjok || 0, n.sunda || 0, n.inggris || 0
+        ];
+        
+        const isTerisi = mapelNilai.some(val => val > 0);
+        const sum = mapelNilai.reduce((a, b) => a + b, 0);
+        const r = isTerisi ? (sum / mapelNilai.length).toFixed(1) : "-";
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3 text-slate-500">${i+1}</td>
+            <td class="p-3 font-bold text-slate-800">${s.nama}</td>
+            <td class="p-3 text-slate-500">${s.nis}</td>
+            <td class="p-3">${n.ppkn || '-'}</td>
+            <td class="p-3">${n.pai || '-'}</td>
+            <td class="p-3">${n.indo || '-'}</td>
+            <td class="p-3">${n.mtk || '-'}</td>
+            <td class="p-3">${n.ipas || '-'}</td>
+            <td class="p-3">${n.ipa || '-'}</td>
+            <td class="p-3">${n.ips || '-'}</td>
+            <td class="p-3">${n.sbdp || '-'}</td>
+            <td class="p-3">${n.pjok || '-'}</td>
+            <td class="p-3">${n.sunda || '-'}</td>
+            <td class="p-3">${n.inggris || '-'}</td>
+            <td class="p-3 font-extrabold text-center bg-emerald-50 text-emerald-800">${r}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function cetakLeger() {
+      const container = document.getElementById("print-leger-container").innerHTML;
+      const win = window.open("", "_blank");
+      win.document.write(`
+        <html>
+        <head>
+          <title>Cetak Leger Nilai</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+        </head>
+        <body class="p-8 text-slate-800 bg-white" onload="window.print()">
+          ${container}
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    // ==================== LOGIKA TAB: CETAK RAPOR ====================
+    function onPilihKelasCetakUbah() {
+      const k = document.getElementById("cetak-pilih-kelas").value;
+      const selectSiswa = document.getElementById("cetak-pilih-siswa");
+      selectSiswa.innerHTML = `<option value="">-- Pilih Siswa --</option>`;
+
+      const siswaKelas = state.siswa.filter(s => s.kelas === k && (s.status === 'Aktif' || s.status === 'Mutasi Masuk' || s.status === 'Lulus'));
+      siswaKelas.forEach(s => {
+        selectSiswa.innerHTML += `<option value="${s.nis}">${s.nama} (${s.nis})</option>`;
+      });
+
+      document.getElementById("rapor-preview-section").classList.add("hidden");
+    }
+
+    function renderRaporSiswa() {
+      const nis = document.getElementById("cetak-pilih-siswa").value;
+      const sem = document.getElementById("cetak-pilih-semester").value;
+      const kelas = document.getElementById("cetak-pilih-kelas").value;
+
+      if (!nis || !sem) {
+        document.getElementById("rapor-preview-section").classList.add("hidden");
+        return;
+      }
+
+      const s = state.siswa.find(x => x.nis === nis);
+      if (!s) return;
+
+      // Isi metadata
+      document.getElementById("r-nama").innerText = s.nama;
+      document.getElementById("r-nis").innerText = s.nis;
+      document.getElementById("r-nisn").innerText = s.nisn;
+      document.getElementById("r-kelas").innerText = kelas;
+      document.getElementById("r-semester").innerText = sem === "1" ? "1 (Ganjil)" : "2 (Genap)";
+      document.getElementById("r-ta").innerText = s.ta;
+
+      // Ambil Nilai
+      const key = `${nis}_${sem}_${kelas}`;
+      const n = state.nilai[key] || {};
+      const mapelList = [
+        { kode: "PPKN", nama: "Pendidikan Pancasila dan Kewarganegaraan", val: n.ppkn },
+        { kode: "PAI", nama: "Pendidikan Agama Islam", val: n.pai },
+        { kode: "B.INDO", nama: "Bahasa Indonesia", val: n.indo },
+        { kode: "MTK", nama: "Matematika", val: n.mtk },
+        { kode: "IPAS", nama: "IPAS (Ilmu Pengetahuan Alam & Sosial)", val: n.ipas },
+        { kode: "IPA", nama: "Ilmu Pengetahuan Alam", val: n.ipa },
+        { kode: "IPS", nama: "Ilmu Pengetahuan Sosial", val: n.ips },
+        { kode: "SBDP", nama: "Seni Budaya & Prakarya", val: n.sbdp },
+        { kode: "PJOK", nama: "PJOK", val: n.pjok },
+        { kode: "B.SUNDA", nama: "Bahasa Sunda", val: n.sunda },
+        { kode: "B.INGGRIS", nama: "Bahasa Inggris", val: n.inggris }
+      ];
+
+      const rNilaiBody = document.getElementById("r-nilai-body");
+      rNilaiBody.innerHTML = "";
+
+      mapelList.forEach((m, idx) => {
+        rNilaiBody.innerHTML += `
+          <tr>
+            <td class="border border-slate-300 p-2 text-center">${idx+1}</td>
+            <td class="border border-slate-300 p-2 font-medium">${m.nama} (${m.kode})</td>
+            <td class="border border-slate-300 p-2 text-center font-bold">${m.val || '0'}</td>
+          </tr>
+        `;
+      });
+
+      // Ambil Absen & Catatan
+      const a = state.absensi[key] || {};
+      document.getElementById("r-abs-sakit").innerText = `${a.sakit || 0} Hari`;
+      document.getElementById("r-abs-izin").innerText = `${a.izin || 0} Hari`;
+      document.getElementById("r-abs-alpa").innerText = `${a.alpa || 0} Hari`;
+      document.getElementById("r-catatan").innerText = a.catatan ? `"${a.catatan}"` : `"Wali kelas belum memberikan catatan perkembangan untuk semester ini."`;
+
+      document.getElementById("rapor-preview-section").classList.remove("hidden");
+    }
+
+    function cetakRaporSewa() {
+      const container = document.getElementById("rapor-print-container").innerHTML;
+      const win = window.open("", "_blank");
+      win.document.write(`
+        <html>
+        <head>
+          <title>Rapor Siswa - SDIT ANNIHAYAH</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>
+            @media print {
+              body { margin: 1.5cm; }
+            }
+          </style>
+        </head>
+        <body class="p-8 text-slate-900 bg-white" onload="window.print()">
+          ${container}
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    // ==================== LOGIKA TAB: PENGATURAN KELAS & TA ====================
+    function renderSettingsLists() {
+      // List Kelas
+      const classList = document.getElementById("settings-class-list");
+      classList.innerHTML = "";
+      state.kelas.forEach(k => {
+        classList.innerHTML += `
+          <div class="flex items-center justify-between p-3 text-xs text-slate-700">
+            <span class="font-bold">${k}</span>
+            <button onclick="hapusKelas('${k}')" class="text-rose-600 hover:text-rose-800"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        `;
+      });
+
+      // List TA
+      const taList = document.getElementById("settings-ta-list");
+      taList.innerHTML = "";
+      state.tahunAjaran.forEach(t => {
+        const isAktif = t === state.taAktif;
+        const activeBadge = isAktif ? '<span class="ml-2 bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.5 rounded">Aktif</span>' : '';
+        const actionBtn = !isAktif ? `<button onclick="setTAAktif('${t}')" class="text-emerald-600 hover:text-emerald-800 font-bold text-[10px] mr-2">Aktifkan</button>` : '';
+        
+        taList.innerHTML += `
+          <div class="flex items-center justify-between p-3 text-xs text-slate-700">
+            <span class="font-bold">${t} ${activeBadge}</span>
+            <div class="space-x-2">
+              ${actionBtn}
+              <button onclick="hapusTA('${t}')" class="text-rose-600 hover:text-rose-800"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function tambahKelas() {
+      const el = document.getElementById("setting-new-kelas");
+      const k = el.value.trim();
+      if (!k) return;
+      if (state.kelas.includes(k)) {
+        showToast("Kelas sudah terdaftar!", true);
+        return;
+      }
+      state.kelas.push(k);
+      saveState();
+      el.value = "";
+      renderSettingsLists();
+      populateSelectors();
+      showToast("Kelas baru berhasil didaftarkan.");
+    }
+
+    function hapusKelas(k) {
+      if (confirm(`Apakah Anda yakin ingin menghapus '${k}'? Siswa yang didaftarkan di kelas ini mungkin perlu dipindahkan.`)) {
+        state.kelas = state.kelas.filter(x => x !== k);
+        saveState();
+        renderSettingsLists();
+        populateSelectors();
+        showToast("Kelas berhasil dihapus.");
+      }
+    }
+
+    function tambahTA() {
+      const el = document.getElementById("setting-new-ta");
+      const t = el.value.trim();
+      if (!t) return;
+      if (state.tahunAjaran.includes(t)) {
+        showToast("Tahun ajaran sudah terdaftar!", true);
+        return;
+      }
+      state.tahunAjaran.push(t);
+      saveState();
+      el.value = "";
+      renderSettingsLists();
+      populateSelectors();
+      showToast("Tahun ajaran baru berhasil didaftarkan.");
+    }
+
+    // Hapus TA
+    function hapusTA(t) {
+      if (state.taAktif === t) {
+        showToast("Tidak bisa menghapus Tahun Ajaran yang sedang AKTIF!", true);
+        return;
+      }
+      if (confirm(`Apakah Anda yakin ingin menghapus '${t}'?`)) {
+        state.tahunAjaran = state.tahunAjaran.filter(x => x !== t);
+        saveState();
+        renderSettingsLists();
+        populateSelectors();
+        showToast("Tahun ajaran berhasil dihapus.");
+      }
+    }
+
+    function setTAAktif(t) {
+      state.taAktif = t;
+      document.getElementById("header-ta-badge").innerText = t;
+      saveState();
+      renderSettingsLists();
+      showToast(`Tahun ajaran aktif diubah ke ${t}`);
+    }
+  </script>
+</body>
+</html>
+```
